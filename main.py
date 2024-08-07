@@ -3,7 +3,7 @@ import os
 import sys
 import math
 
-#### Helper functions
+## Helper functions
 def read_csv_file(file_name):
     cities_data = []
 
@@ -58,14 +58,60 @@ def index_of_city(city, data):
         if city == data[i][0]:
             return i
     return -1
+def get_neighbors(city, data):
+    neighbors = []
+    for start, _, _, end, _, _, _ in data:
+        if start == city:
+            neighbors.append(end)
+    return neighbors
 
-#### End of Helper functions 
+def distance_between(city1, city2, data):
+    for start, _, _, end, _, _, distance in data:
+        if start == city1 and end == city2:
+            return distance
+    return None
 
-
-# Your code starts here
 def find_path_astar(start_city, end_city, data):
-#TODO: Implement A* algorithm to find the path from start_city to end_city  
-    pass
+    open_set = set([start_city])
+    closed_set = set()
+
+    g = {start_city: 0}
+    h = {start_city: heuristic_func(start_city, end_city, data)}
+    f = {start_city: h[start_city]}
+
+    parent_map = {start_city: None}
+
+    while open_set:
+        current_city = min(open_set, key=lambda city: f[city])
+
+        if current_city == end_city:
+            path = []
+            while current_city:
+                path.append(current_city)
+                current_city = parent_map[current_city]
+            return path[::-1]
+
+        open_set.remove(current_city)
+        closed_set.add(current_city)
+
+        for neighbor in get_neighbors(current_city, data):
+            if neighbor in closed_set:
+                continue
+
+            tentative_g_score = g[current_city] + distance_between(current_city, neighbor, data)
+
+            if neighbor not in open_set:
+                open_set.add(neighbor)
+            elif tentative_g_score >= g.get(neighbor, float('inf')):
+                continue
+
+            parent_map[neighbor] = current_city
+            g[neighbor] = tentative_g_score
+            h[neighbor] = heuristic_func(neighbor, end_city, data)
+            f[neighbor] = g[neighbor] + h[neighbor]
+
+    return None
+
 
 
 # Make sure to pass the 'data' variable to the heuristic_func when calling it

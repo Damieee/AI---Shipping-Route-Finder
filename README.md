@@ -52,6 +52,3 @@ The second command line argument, sample_routes/us.csv, is the input file name. 
 # Testing your code
 To run the tests, simply execute the test_main.py file like this: `python3 test_main.py`.
 
-# Rubric
-- All test cases pass, demonstrating a correct implementation of the A* search algorithm. **[100%]**
-- Partial Test Cases Passed: The score is based on the number of test cases passed.
